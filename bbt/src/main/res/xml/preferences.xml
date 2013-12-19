@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/rounds_setting_title"
+        android:key="@string/rounds_pref_key"
+        android:entries="@array/rounds"
+        android:entryValues="@array/roundsValues"
+        android:defaultValue="1">
+
+    </ListPreference>
+
+    <ListPreference
+        android:title="@string/round_times_setting_title"
+        android:key="@string/round_time_pref_key"
+        android:entries="@array/roundTimes"
+        android:entryValues="@array/roundTimeValues"
+        android:defaultValue="60">
+
+    </ListPreference>
+
+    <ListPreference
+        android:title="@string/rest_time_setting_title"
+        android:key="@string/rest_time_pref_key"
+        android:entries="@array/restTimes"
+        android:entryValues="@array/restTimeValues"
+        android:defaultValue="60">
+
+    </ListPreference>
+</PreferenceScreen>

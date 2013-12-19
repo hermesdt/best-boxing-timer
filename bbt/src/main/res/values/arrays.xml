@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="rounds">
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+        <item name="4">4</item>
+        <item name="5">5</item>
+        <item name="6">6</item>
+        <item name="7">7</item>
+        <item name="8">8</item>
+        <item name="9">9</item>
+        <item name="10">10</item>
+        <item name="11">11</item>
+        <item name="12">12</item>
+        <item name="13">13</item>
+
+    </string-array>
+    <string-array name="roundsValues">
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+        <item name="4">4</item>
+        <item name="5">5</item>
+        <item name="6">6</item>
+        <item name="7">7</item>
+        <item name="8">8</item>
+        <item name="9">9</item>
+        <item name="10">10</item>
+        <item name="11">11</item>
+        <item name="12">12</item>
+        <item name="13">13</item>
+    </string-array>
+
+    <string-array name="roundTimes">
+        <item name="1">00:15</item>
+        <item name="2">00:30</item>
+        <item name="3">00:45</item>
+        <item name="4">01:00</item>
+        <item name="5">01:30</item>
+        <item name="6">02:00</item>
+        <item name="7">02:30</item>
+        <item name="8">03:00</item>
+        <item name="9">03:30</item>
+        <item name="10">04:00</item>
+        <item name="11">04:30</item>
+        <item name="12">05:00</item>
+        <item name="13">06:00</item>
+        <item name="14">07:00</item>
+        <item name="15">08:00</item>
+        <item name="16">09:00</item>
+        <item name="17">10:00</item>
+    </string-array>
+
+    <string-array name="roundTimeValues">
+        <item name="1">15</item>
+        <item name="2">30</item>
+        <item name="3">45</item>
+        <item name="4">60</item>
+        <item name="5">90</item>
+        <item name="6">120</item>
+        <item name="7">150</item>
+        <item name="8">180</item>
+        <item name="9">210</item>
+        <item name="10">240</item>
+        <item name="11">270</item>
+        <item name="12">300</item>
+        <item name="13">360</item>
+        <item name="14">420</item>
+        <item name="15">480</item>
+        <item name="16">540</item>
+        <item name="17">600</item>
+    </string-array>
+
+    <string-array name="restTimes">
+        <item name="0">No rest</item>
+        <item name="1">00:15</item>
+        <item name="2">00:30</item>
+        <item name="3">00:45</item>
+        <item name="4">01:00</item>
+        <item name="5">01:30</item>
+        <item name="6">02:00</item>
+        <item name="7">02:30</item>
+        <item name="8">03:00</item>
+        <item name="9">03:30</item>
+        <item name="10">04:00</item>
+        <item name="11">04:30</item>
+        <item name="12">05:00</item>
+        <item name="13">06:00</item>
+        <item name="14">07:00</item>
+        <item name="15">08:00</item>
+        <item name="16">09:00</item>
+        <item name="17">10:00</item>
+    </string-array>
+
+    <string-array name="restTimeValues">
+        <item name="0">0</item>
+        <item name="1">15</item>
+        <item name="2">30</item>
+        <item name="3">45</item>
+        <item name="4">60</item>
+        <item name="5">90</item>
+        <item name="6">120</item>
+        <item name="7">150</item>
+        <item name="8">180</item>
+        <item name="9">210</item>
+        <item name="10">240</item>
+        <item name="11">270</item>
+        <item name="12">300</item>
+        <item name="13">360</item>
+        <item name="14">420</item>
+        <item name="15">480</item>
+        <item name="16">540</item>
+        <item name="17">600</item>
+    </string-array>
+</resources>
