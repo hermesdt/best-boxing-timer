@@ -1,24 +1,38 @@
 package com.hermescavern.bestboxingtimer;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.rtp.AudioStream;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 public class MainActivity extends ActionBarActivity {
+
+    private ShareActionProvider mShareActionProvider;
 
     private enum TimerState {
         RUNNING, STOPPED, FINISHED, PAUSED;
@@ -32,14 +46,27 @@ public class MainActivity extends ActionBarActivity {
     private RoundState mRoundState = RoundState.WORKING;
     private CountDownTimer mTimer;
     private TextView mCounterText;
-    private ImageButton mStartButton;
-    private ImageButton mResetButton;
-    private TextView mStartText;
-    private TextView mResetText;
+    private Button mStartButton;
+    private Button mResetButton;
     private TextView mRoundText;
     private long mCurrentTime;
     private int mRound = 1;
+    private AudioManager am;
     private BroadcastReceiver mReceiver = new MyBroadcastReceiver();
+    private MyAudiosFocusListener myAudiosFocusListener = new MyAudiosFocusListener();
+    private boolean mWarningTriggered = false;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +77,11 @@ public class MainActivity extends ActionBarActivity {
 
         mCounterText = (TextView) findViewById(R.id.counter_text);
 
-        mStartButton = (ImageButton) findViewById(R.id.start_button);
+        mStartButton = (Button) findViewById(R.id.start_button);
         mStartButton.setOnClickListener(new StartButtonClickEvent());
-        mResetButton = (ImageButton) findViewById(R.id.reset_button);
+        mResetButton = (Button) findViewById(R.id.reset_button);
         mResetButton.setOnClickListener(new ResetButtonClickEvent());
 
-        mStartText = (TextView) findViewById(R.id.start_text);
-        mResetText = (TextView) findViewById(R.id.reset_text);
         mRoundText = (TextView) findViewById(R.id.round_text);
 
         paintTime(getRoundTime());
@@ -64,12 +89,42 @@ public class MainActivity extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BroadcastMessages.ROUND_TIME_UPDATED);
         registerReceiver(mReceiver, filter);
+
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        if(adView != null){
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("907D4387EBE72BBAC7589D68B70965E7")
+                    .addTestDevice("1FEE3785D790C2E915308DD4A8C37C58")
+                    .build();
+            adView.loadAd(adRequest);
+        }
+
+        am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
     protected void onDestroy() {
         unregisterReceiver(mReceiver);
+        am.abandonAudioFocus(myAudiosFocusListener);
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                am.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                am.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -77,6 +132,37 @@ public class MainActivity extends ActionBarActivity {
         
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem menuItem = menu.findItem(R.id.social_share);
+
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                EasyTracker easyTracker = EasyTracker.getInstance(MainActivity.this);
+                easyTracker.send(MapBuilder
+                        .createEvent("ui_event",     // Event category (required)
+                                "menu",  // Event action (required)
+                                "share_with",   // Event label
+                                null)            // Event value
+                        .build()
+                );
+
+                Intent intent = new Intent();
+                intent.setType("text/plain");
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text));
+
+
+                Intent newIntent = Intent.createChooser(intent, getString(R.string.share_title));
+                startActivity(newIntent);
+                // startActivity(intent);
+
+                return false;
+            }
+        });
+
+
+
         return true;
     }
 
@@ -122,6 +208,12 @@ public class MainActivity extends ActionBarActivity {
         return Integer.parseInt(totalRoundsText);
     }
 
+    private int getWarningTime(){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String warningTimeText = sp.getString(getString(R.string.warning_time_pref_key), "0");
+        return Integer.parseInt(warningTimeText)*1000;
+    }
+
     private void startWorking(){
         mRoundState = RoundState.WORKING;
         playStartRoundRing();
@@ -138,6 +230,7 @@ public class MainActivity extends ActionBarActivity {
     private void workoutFinished(){
         mRound = 1;
         mRoundText.setText("Round 1");
+        paintTime(getRoundTime());
     }
 
     private void startTimer(){
@@ -146,24 +239,25 @@ public class MainActivity extends ActionBarActivity {
         mTimer = createTimer(getInitialTime()+1000);
         mTimer.start();
         mTimerState = TimerState.RUNNING;
-        mStartText.setText(R.string.pause);
-        mStartButton.setImageResource(R.drawable.pause);
+        mWarningTriggered = false;
+        mStartButton.setText(R.string.pause);
+        mStartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pause, 0, 0, 0);
     }
 
     private void pauseTimer(){
         mTimer.cancel();
         mTimerState = TimerState.PAUSED;
-        mStartText.setText(R.string.start);
+        mStartButton.setText(R.string.start);
         mTimer = null;
-        mStartButton.setImageResource(R.drawable.play);
+        mStartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.play, 0, 0, 0);
     }
 
     private void resumeTimer(){
         mTimer = createTimer(mCurrentTime);
         mTimer.start();
         mTimerState = TimerState.RUNNING;
-        mStartText.setText(R.string.pause);
-        mStartButton.setImageResource(R.drawable.pause);
+        mStartButton.setText(R.string.pause);
+        mStartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pause, 0, 0, 0);
     }
 
     private void stopTimer(){
@@ -180,9 +274,10 @@ public class MainActivity extends ActionBarActivity {
     private void resetTimer(){
         mCounterText.setText("00:00");
         mTimerState = TimerState.FINISHED;
-        mStartText.setText(R.string.start);
+        mStartButton.setText(R.string.start);
         mTimer = null;
-        mStartButton.setImageResource(R.drawable.play);
+        mCounterText.setTextColor(getResources().getColor(R.color.working_text_color));
+        mStartButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.play, 0, 0, 0);
     }
 
     private void paintTime(long milis){
@@ -231,6 +326,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private class MyAudiosFocusListener implements AudioManager.OnAudioFocusChangeListener {
+
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+
+        }
+    }
+
     private CountDownTimer createTimer(long duration){
 
         return new CountDownTimer(duration, 200){
@@ -238,7 +341,17 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onTick(final long millisUntilFinished) {
+                long warningTime = getWarningTime() + 1000;
 
+                if(mWarningTriggered == false
+                        && mRoundState == RoundState.WORKING
+                        && warningTime > 0
+                        && millisUntilFinished < warningTime
+                        && (getRoundTime() + 1000) != warningTime){
+
+                    playRoundWarningRing();
+                    mWarningTriggered = true;
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -281,12 +394,38 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void playStartRoundRing(){
-        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.round_start);
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.round_start);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.release();
+            }
+        });
+        mediaPlayer.start();
+    }
+
+    private void playRoundWarningRing(){
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.round_warning);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.release();
+            }
+        });
         mediaPlayer.start();
     }
 
     private void playEndRoundRing(){
-        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.round_end);
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.round_end);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.release();
+            }
+        });
         mediaPlayer.start();
     }
 }

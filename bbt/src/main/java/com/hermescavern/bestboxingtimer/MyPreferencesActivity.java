@@ -56,5 +56,18 @@ public class MyPreferencesActivity extends PreferenceActivity {
                 return true;
             }
         });
+
+        final ListPreference warningTimesList = (ListPreference) findPreference(getString(R.string.warning_time_pref_key));
+        if(warningTimesList.getValue() == null)
+            warningTimesList.setValueIndex(0);
+
+        warningTimesList.setSummary(warningTimesList.getEntry().toString());
+        warningTimesList.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(warningTimesList.getEntries()[warningTimesList.findIndexOfValue(newValue.toString())]);
+                return true;
+            }
+        });
     }
 }

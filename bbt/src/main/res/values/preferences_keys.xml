@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rounds_pref_key">pref_rounds</string>
+    <string name="round_time_pref_key">pref_round_time</string>
+    <string name="rest_time_pref_key">rest_time_pref</string>
+    <string name="warning_time_pref_key">warning_time_pref</string>
+</resources>

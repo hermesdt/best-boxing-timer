@@ -10,10 +10,12 @@
     <string name="resume">Resume</string>
     <string name="round_text_format">Round %d</string>
     <string name="rounds_setting_title">Number of rounds</string>
-
-    <string name="rounds_pref_key">pref_rounds</string>
-    <string name="round_time_pref_key">pref_round_time</string>
     <string name="round_times_setting_title">Time of round</string>
     <string name="rest_time_setting_title">Time of rest</string>
-    <string name="rest_time_pref_key">rest_time_pref</string>
+    <string name="warning_time_setting_title">Warning time</string>
+    <string name="action_share">Share</string>
+    <string name="share_text">Check this workout timer! - https://play.google.com/store/apps/details?id=com.hermescavern.bestboxingtimer</string>
+    <string name="share_title">Share with</string>
+    <string name="no_warning">No warning</string>
+    <string name="no_rest">No rest</string>
 </resources>

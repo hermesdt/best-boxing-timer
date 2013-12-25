@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Temporizador Boxeo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="start">Empezar</string>
+    <string name="reset">Reiniciar</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Continuar</string>
+    <string name="round_text_format">Round %d</string>
+    <string name="rounds_setting_title">Número de rounds</string>
+    <string name="round_times_setting_title">Duración del round</string>
+    <string name="rest_time_setting_title">Tiempo de descanso</string>
+    <string name="warning_time_setting_title">Aviso</string>
+    <string name="action_share">Compartir</string>
+    <string name="share_text">¡Genial para hacer ejercicio! - https://play.google.com/store/apps/details?id=com.hermescavern.bestboxingtimer</string>
+    <string name="share_title">Compartir con</string>
+    <string name="no_warning">Sin aviso</string>
+    <string name="no_rest">Sin descanso</string>
+</resources>

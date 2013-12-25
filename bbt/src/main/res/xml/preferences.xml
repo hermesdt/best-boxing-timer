@@ -27,4 +27,13 @@
         android:defaultValue="60">
 
     </ListPreference>
+
+    <ListPreference
+        android:title="@string/warning_time_setting_title"
+        android:key="@string/warning_time_pref_key"
+        android:entries="@array/warningTimes"
+        android:entryValues="@array/warningTimeValues"
+        android:defaultValue="0">
+
+    </ListPreference>
 </PreferenceScreen>
