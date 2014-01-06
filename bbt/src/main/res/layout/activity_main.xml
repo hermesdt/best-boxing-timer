@@ -82,6 +82,5 @@
             android:layout_height="wrap_content"
             ads:adUnitId="a152b35dded620d"
             ads:adSize="BANNER"/>
-
     </RelativeLayout>
 </ScrollView>

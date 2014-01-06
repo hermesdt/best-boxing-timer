@@ -1,22 +1,17 @@
 package com.hermescavern.bestboxingtimer;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.rtp.AudioStream;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,10 +88,10 @@ public class MainActivity extends ActionBarActivity {
         AdView adView = (AdView)this.findViewById(R.id.adView);
         if(adView != null){
             AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("907D4387EBE72BBAC7589D68B70965E7")
-                    .addTestDevice("1FEE3785D790C2E915308DD4A8C37C58")
-                    .build();
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("907D4387EBE72BBAC7589D68B70965E7")
+                .addTestDevice("1FEE3785D790C2E915308DD4A8C37C58")
+                .build();
             adView.loadAd(adRequest);
         }
 
